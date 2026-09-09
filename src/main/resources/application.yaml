@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: usage-based-billing
+  config:
+    import: "optional:file:./.env[.properties]"

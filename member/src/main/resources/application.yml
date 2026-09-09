@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/usage_based_billing
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}

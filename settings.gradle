@@ -1,0 +1,3 @@
+rootProject.name = 'usage-based-billing'
+
+include 'member'
