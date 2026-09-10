@@ -29,8 +29,8 @@ public class Member {
         this.email = Objects.requireNonNull(email);
         this.bankAccount = Objects.requireNonNull(bankAccount);
         this.withdrawalDay = Objects.requireNonNull(withdrawalDay);
-        this.pendingWithdrawalDay = Objects.requireNonNull(pendingWithdrawalDay);
-        this.withdrawalDayEffectiveMonth = Objects.requireNonNull(withdrawalDayEffectiveMonth);
+        this.pendingWithdrawalDay = pendingWithdrawalDay;
+        this.withdrawalDayEffectiveMonth = withdrawalDayEffectiveMonth;
     }
 
     public void changeBankAccount(BankAccount bankAccount) {
