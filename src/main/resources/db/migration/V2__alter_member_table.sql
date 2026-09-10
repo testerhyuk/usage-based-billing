@@ -1,0 +1,1 @@
+alter table member add column registered_at DATETIME(6) NOT NULL;

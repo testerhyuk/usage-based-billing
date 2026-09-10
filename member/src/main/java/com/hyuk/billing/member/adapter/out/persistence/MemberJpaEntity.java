@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -24,4 +25,5 @@ public class MemberJpaEntity {
     private String withdrawalDay;
     private String pendingWithdrawalDay;
     private LocalDate withdrawalDayEffectiveMonth;
+    private Instant registeredAt;
 }
