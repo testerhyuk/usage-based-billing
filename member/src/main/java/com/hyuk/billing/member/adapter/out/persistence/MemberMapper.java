@@ -5,7 +5,9 @@ import com.hyuk.billing.member.domain.BankAccount;
 import com.hyuk.billing.member.domain.Member;
 import com.hyuk.billing.member.domain.WithdrawalDay;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.Objects;
 
@@ -35,7 +37,8 @@ public class MemberMapper {
                 bankAccount,
                 withdrawalDay,
                 pendingWithdrawalDay,
-                withdrawalDayEffectiveMonth
+                withdrawalDayEffectiveMonth,
+                memberJpaEntity.getRegisteredAt()
         );
     }
 
@@ -59,7 +62,8 @@ public class MemberMapper {
                 String.valueOf(member.getBankAccount().accountNumber()),
                 String.valueOf(member.getWithdrawalDay()),
                 pendingWithdrawalDay,
-                withdrawalDayEffectiveMonth
+                withdrawalDayEffectiveMonth,
+                member.getRegisteredAt()
         );
     }
 }

@@ -2,6 +2,7 @@ package com.hyuk.billing.member.domain;
 
 import lombok.Getter;
 
+import java.time.Instant;
 import java.time.YearMonth;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class Member {
     private WithdrawalDay withdrawalDay;
     private WithdrawalDay pendingWithdrawalDay;
     private YearMonth withdrawalDayEffectiveMonth;
+    private Instant registeredAt;
 
     public Member(
             String memberId,
@@ -22,7 +24,8 @@ public class Member {
             BankAccount bankAccount,
             WithdrawalDay withdrawalDay,
             WithdrawalDay pendingWithdrawalDay,
-            YearMonth withdrawalDayEffectiveMonth
+            YearMonth withdrawalDayEffectiveMonth,
+            Instant registeredAt
     ) {
         this.memberId = Objects.requireNonNull(memberId);
         this.googleId = Objects.requireNonNull(googleId);
@@ -31,6 +34,7 @@ public class Member {
         this.withdrawalDay = Objects.requireNonNull(withdrawalDay);
         this.pendingWithdrawalDay = pendingWithdrawalDay;
         this.withdrawalDayEffectiveMonth = withdrawalDayEffectiveMonth;
+        this.registeredAt = registeredAt;
     }
 
     public void changeBankAccount(BankAccount bankAccount) {
