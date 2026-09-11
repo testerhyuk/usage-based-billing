@@ -1,5 +1,6 @@
 package com.hyuk.billing.member.adapter.out.persistence;
 
+import com.hyuk.billing.member.domain.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,4 +27,7 @@ public class MemberJpaEntity {
     private String pendingWithdrawalDay;
     private LocalDate withdrawalDayEffectiveMonth;
     private Instant registeredAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 }

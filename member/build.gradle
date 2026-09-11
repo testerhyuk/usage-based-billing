@@ -2,6 +2,12 @@ plugins {
     id 'java'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 repositories {
     mavenCentral()
 }
@@ -11,4 +17,15 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.48'
     annotationProcessor 'org.projectlombok:lombok:1.18.48'
+
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security:4.1.1'
+
+    // 구글 OAuth2·OIDC 로그인
+    implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-client:4.1.1'
+
+    // 컨트롤러와 HttpServletRequest·HttpServletResponse 사용
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc:4.1.1'
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation:4.1.1'
 }

@@ -1,4 +1,4 @@
-package com.hyuk.billing.usage_based_billing;
+package com.hyuk.billing;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

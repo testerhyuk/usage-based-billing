@@ -6,6 +6,7 @@ import com.hyuk.billing.member.application.port.out.IssuedApiKey;
 import com.hyuk.billing.member.application.port.out.MemberRepositoryPort;
 import com.hyuk.billing.member.domain.BankAccount;
 import com.hyuk.billing.member.domain.Member;
+import com.hyuk.billing.member.domain.Role;
 import com.hyuk.billing.member.domain.WithdrawalDay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class MemberService implements MemberUseCase {
         Optional<Member> googleInfo = memberRepositoryPort.findByGoogleId(googleIdentity.googleId());
 
         return new LoginResult(
-                googleInfo.map(Member::getMemberId).orElse(null)
+                googleInfo.map(Member::getMemberId).orElse(null),
+                googleInfo.map(member -> member.getRole() == Role.ROLE_ADMIN).orElse(false)
         );
     }
 
@@ -44,7 +46,8 @@ public class MemberService implements MemberUseCase {
                 registerMemberCommand.withdrawalDay(),
                 null,
                 null,
-                Instant.now()
+                Instant.now(),
+                Role.ROLE_MEMBER
         );
 
         memberRepositoryPort.save(member);

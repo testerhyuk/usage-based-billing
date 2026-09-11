@@ -31,6 +31,8 @@ dependencies {
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.48'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.48'
+
+	implementation project(':member')
 }
 
 tasks.named('test') {

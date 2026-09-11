@@ -3,9 +3,11 @@ package com.hyuk.billing.member.adapter.out.persistence;
 import com.hyuk.billing.member.application.port.out.MemberRepositoryPort;
 import com.hyuk.billing.member.domain.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+@Repository
 @RequiredArgsConstructor
 public class MemberPersistenceAdapter implements MemberRepositoryPort {
     private final SpringDataMemberRepository springDataMemberRepository;
