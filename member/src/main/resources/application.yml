@@ -3,3 +3,38 @@ spring:
     url: jdbc:mysql://localhost:3306/usage_based_billing
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_PASSWORD}
+            scope:
+              - openid
+              - profile
+              - email
+
+
+app:
+  frontend-base-url: http://localhost:5173
+  urls:
+    login: /login
+    google-login: /oauth2/authorization/google
+    google-callback: /login/oauth2/code/google
+
+    registration: /api/members
+    member-me: /api/members/me
+    bank-account: /api/members/me/bank-account
+    withdrawal-day: /api/members/me/withdrawal-day
+
+    admin-pattern: /api/admin/**
+
+    registration-page: ${app.frontend-base-url}/signup
+    member-page: ${app.frontend-base-url}/mypage
+    admin-page: ${app.frontend-base-url}/admin
+
+    csrf: /api/csrf

@@ -16,6 +16,7 @@ public class Member {
     private WithdrawalDay pendingWithdrawalDay;
     private YearMonth withdrawalDayEffectiveMonth;
     private Instant registeredAt;
+    private Role role;
 
     public Member(
             String memberId,
@@ -25,7 +26,8 @@ public class Member {
             WithdrawalDay withdrawalDay,
             WithdrawalDay pendingWithdrawalDay,
             YearMonth withdrawalDayEffectiveMonth,
-            Instant registeredAt
+            Instant registeredAt,
+            Role role
     ) {
         this.memberId = Objects.requireNonNull(memberId);
         this.googleId = Objects.requireNonNull(googleId);
@@ -35,6 +37,7 @@ public class Member {
         this.pendingWithdrawalDay = pendingWithdrawalDay;
         this.withdrawalDayEffectiveMonth = withdrawalDayEffectiveMonth;
         this.registeredAt = registeredAt;
+        this.role = Objects.requireNonNull(role);
     }
 
     public void changeBankAccount(BankAccount bankAccount) {
@@ -42,7 +45,7 @@ public class Member {
     }
 
     public void changeWithdrawalDay(WithdrawalDay day, YearMonth currentMonth) {
-        this.withdrawalDay = Objects.requireNonNull(day);
+        this.pendingWithdrawalDay = Objects.requireNonNull(day);
         this.withdrawalDayEffectiveMonth = Objects.requireNonNull(currentMonth.plusMonths(1));
     }
 }

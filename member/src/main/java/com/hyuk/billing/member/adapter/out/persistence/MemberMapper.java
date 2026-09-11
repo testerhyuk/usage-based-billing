@@ -4,6 +4,7 @@ import com.hyuk.billing.member.domain.Bank;
 import com.hyuk.billing.member.domain.BankAccount;
 import com.hyuk.billing.member.domain.Member;
 import com.hyuk.billing.member.domain.WithdrawalDay;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.Objects;
 
+@Component
 public class MemberMapper {
     public Member toDomain(MemberJpaEntity memberJpaEntity) {
         Objects.requireNonNull(memberJpaEntity);
@@ -38,7 +40,8 @@ public class MemberMapper {
                 withdrawalDay,
                 pendingWithdrawalDay,
                 withdrawalDayEffectiveMonth,
-                memberJpaEntity.getRegisteredAt()
+                memberJpaEntity.getRegisteredAt(),
+                memberJpaEntity.getRole()
         );
     }
 
@@ -63,7 +66,8 @@ public class MemberMapper {
                 String.valueOf(member.getWithdrawalDay()),
                 pendingWithdrawalDay,
                 withdrawalDayEffectiveMonth,
-                member.getRegisteredAt()
+                member.getRegisteredAt(),
+                member.getRole()
         );
     }
 }
