@@ -20,12 +20,6 @@ public class MemberJpaEntity {
     private String memberId;
     private String googleId;
     private String email;
-    private String bank;
-    private String accountHolderName;
-    private String accountNumber;
-    private String withdrawalDay;
-    private String pendingWithdrawalDay;
-    private LocalDate withdrawalDayEffectiveMonth;
     private Instant registeredAt;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,11 +1,13 @@
 package com.hyuk.billing.member.adapter.in.web;
 
 import com.hyuk.billing.member.adapter.in.ChangeBankAccountRequest;
-import com.hyuk.billing.member.adapter.in.ChangeWithdrawalDayRequest;
+import com.hyuk.billing.member.adapter.in.ChangeBillingSettingsRequest;
 import com.hyuk.billing.member.adapter.in.MemberResponse;
 import com.hyuk.billing.member.adapter.in.security.MemberPrincipal;
+import com.hyuk.billing.member.application.port.in.MemberDetails;
 import com.hyuk.billing.member.application.port.in.MemberUseCase;
 import com.hyuk.billing.member.domain.BankAccount;
+import com.hyuk.billing.member.domain.BillingSettings;
 import com.hyuk.billing.member.domain.Member;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +22,18 @@ public class MemberController {
 
     @GetMapping("${app.urls.member-me}")
     public ResponseEntity<MemberResponse> getMe(@AuthenticationPrincipal MemberPrincipal memberPrincipal) {
-        Member member = memberUseCase.getMember(memberPrincipal.getMemberId());
+        MemberDetails memberDetails = memberUseCase.getMember(memberPrincipal.getMemberId());
+
+        Member member = memberDetails.member();
+        BillingSettings billingSettings = memberDetails.billingSettings();
 
         MemberResponse response = new MemberResponse(
                 member.getMemberId(),
                 member.getEmail(),
-                member.getBankAccount(),
-                member.getWithdrawalDay(),
-                member.getPendingWithdrawalDay(),
-                member.getWithdrawalDayEffectiveMonth(),
+                billingSettings.getBankAccount(),
+                billingSettings.getWithdrawalDay(),
+                billingSettings.getPendingWithdrawalDay(),
+                billingSettings.getEffectiveMonth(),
                 member.getRegisteredAt(),
                 member.getRole()
         );
@@ -36,31 +41,24 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("${app.urls.bank-account}")
-    public ResponseEntity<Void> changeBankAccount(
-            @Valid @RequestBody ChangeBankAccountRequest request,
+    @PatchMapping("${app.urls.billing-settings}")
+    public ResponseEntity<Void> changeBillingSettings(
+            @Valid @RequestBody ChangeBillingSettingsRequest request,
             @AuthenticationPrincipal MemberPrincipal memberPrincipal
     ) {
-        BankAccount bankAccount = new BankAccount(
-                request.bank(),
-                request.accountHolderName(),
-                request.accountNumber()
+        ChangeBankAccountRequest accountRequest = request.bankAccount();
+
+        BankAccount bankAccount = accountRequest == null
+                ? null
+                : new BankAccount(
+                accountRequest.bank(),
+                accountRequest.accountHolderName(),
+                accountRequest.accountNumber()
         );
 
-        memberUseCase.changeBankAccount(
+        memberUseCase.changeBillingSettings(
                 memberPrincipal.getMemberId(),
-                bankAccount);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("${app.urls.withdrawal-day}")
-    public ResponseEntity<Void> changeWithdrawalDay(
-            @Valid @RequestBody ChangeWithdrawalDayRequest request,
-            @AuthenticationPrincipal MemberPrincipal memberPrincipal
-    ) {
-        memberUseCase.changeWithdrawalDay(
-                memberPrincipal.getMemberId(),
+                bankAccount,
                 request.withdrawalDay()
         );
 

@@ -1,18 +1,17 @@
 package com.hyuk.billing.member.application.service;
 
 import com.hyuk.billing.member.application.port.in.*;
+import com.hyuk.billing.member.application.port.out.BillingSettingsRepositoryPort;
 import com.hyuk.billing.member.application.port.out.IssueInitialApiKeyPort;
 import com.hyuk.billing.member.application.port.out.IssuedApiKey;
 import com.hyuk.billing.member.application.port.out.MemberRepositoryPort;
-import com.hyuk.billing.member.domain.BankAccount;
-import com.hyuk.billing.member.domain.Member;
-import com.hyuk.billing.member.domain.Role;
-import com.hyuk.billing.member.domain.WithdrawalDay;
+import com.hyuk.billing.member.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +21,7 @@ import java.util.UUID;
 public class MemberService implements MemberUseCase {
     private final MemberRepositoryPort memberRepositoryPort;
     private final IssueInitialApiKeyPort apiKeyIssuer;
+    private final BillingSettingsRepositoryPort billingSettingsRepositoryPort;
 
     @Override
     public LoginResult resolveLogin(GoogleIdentity googleIdentity) {
@@ -42,15 +42,29 @@ public class MemberService implements MemberUseCase {
                 memberId,
                 registerMemberCommand.googleIdentity().googleId(),
                 registerMemberCommand.googleIdentity().email(),
-                registerMemberCommand.bankAccount(),
-                registerMemberCommand.withdrawalDay(),
-                null,
-                null,
                 Instant.now(),
                 Role.ROLE_MEMBER
         );
 
         memberRepositoryPort.save(member);
+
+        BankAccount bankAccount = new BankAccount(
+                registerMemberCommand.bankAccount().bank(),
+                registerMemberCommand.bankAccount().accountHolderName(),
+                registerMemberCommand.bankAccount().accountNumber()
+        );
+
+        BillingSettings billingSettings = new BillingSettings(
+                memberId,
+                bankAccount,
+                registerMemberCommand.withdrawalDay(),
+                null,
+                null,
+                null,
+                false
+        );
+
+        billingSettingsRepositoryPort.save(billingSettings);
 
         IssuedApiKey apiKey = apiKeyIssuer.issueInitialKey(memberId);
 
@@ -58,29 +72,42 @@ public class MemberService implements MemberUseCase {
     }
 
     @Override
-    public Member getMember(String memberId) {
-        Optional<Member> member = memberRepositoryPort.findById(memberId);
+    public MemberDetails getMember(String memberId) {
+        MemberDetails memberDetails = memberRepositoryPort
+                .findDetailsById(memberId)
+                .orElseThrow(() -> new RuntimeException(
+                        "해당 회원 정보가 없습니다 : " + memberId
+                ));
 
-        if (member.isEmpty()) throw new RuntimeException("해당 회원 정보가 없습니다 : " + memberId);
+        if (memberDetails.billingSettings() == null) {
+            throw new IllegalStateException(
+                    "계좌 및 출금 설정이 없습니다 : " + memberId
+            );
+        }
 
-        return member.get();
+        return memberDetails;
     }
 
     @Override
-    public void changeBankAccount(String memberId, BankAccount bankAccount) {
-        Member member = getMember(memberId);
+    @Transactional
+    public void changeBillingSettings(String memberId, BankAccount bankAccount, WithdrawalDay withdrawalDay) {
+        LocalDate currentDate = LocalDate.now();
 
-        member.changeBankAccount(bankAccount);
+        BillingSettings billingSettings = billingSettingsRepositoryPort.findById(memberId)
+                .orElseThrow(() -> new IllegalStateException("계좌 및 출금 설정이 없습니다 : " + memberId));
 
-        memberRepositoryPort.save(member);
+        billingSettings.changeSettings(bankAccount, withdrawalDay, currentDate);
+
+        billingSettingsRepositoryPort.save(billingSettings);
     }
 
     @Override
-    public void changeWithdrawalDay(String memberId, WithdrawalDay withdrawalDay) {
-        Member member = getMember(memberId);
+    @Transactional
+    public void resetMonthPerLimit(String memberId) {
+        MemberDetails memberDetails = getMember(memberId);
 
-        member.changeWithdrawalDay(withdrawalDay, YearMonth.now());
+        memberDetails.billingSettings().resetMonthPerLimit();
 
-        memberRepositoryPort.save(member);
+        billingSettingsRepositoryPort.save(memberDetails.billingSettings());
     }
 }

@@ -1,5 +1,6 @@
 package com.hyuk.billing.member.adapter.out.persistence;
 
+import com.hyuk.billing.member.application.port.in.MemberDetails;
 import com.hyuk.billing.member.application.port.out.MemberRepositoryPort;
 import com.hyuk.billing.member.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.Optional;
 public class MemberPersistenceAdapter implements MemberRepositoryPort {
     private final SpringDataMemberRepository springDataMemberRepository;
     private final MemberMapper memberMapper;
+    private final BillingSettingsMapper billingSettingsMapper;
 
     @Override
     public Optional<Member> findByGoogleId(String googleId) {
@@ -20,9 +22,14 @@ public class MemberPersistenceAdapter implements MemberRepositoryPort {
     }
 
     @Override
-    public Optional<Member> findById(String memberId) {
-        return springDataMemberRepository.findById(memberId)
-                .map(memberMapper::toDomain);
+    public Optional<MemberDetails> findDetailsById(String memberId) {
+        return springDataMemberRepository.findDetailsById(memberId)
+                .map(result -> new MemberDetails(
+                        memberMapper.toDomain(result.member()),
+                        result.billingSettings() == null
+                            ? null
+                            : billingSettingsMapper.toDomain(result.billingSettings())
+                ));
     }
 
     @Override
