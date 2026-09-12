@@ -118,8 +118,7 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 HttpMethod.PATCH,
-                                urls.bankAccount(),
-                                urls.withdrawalDay()
+                                urls.billingSettings()
                         )
                         .hasAnyAuthority(
                                 MemberRole.ROLE_MEMBER.name(),

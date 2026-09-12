@@ -28,8 +28,7 @@ app:
 
     registration: /api/members
     member-me: /api/members/me
-    bank-account: /api/members/me/bank-account
-    withdrawal-day: /api/members/me/withdrawal-day
+    billing-settings: /api/members/me/billing-settings
 
     admin-pattern: /api/admin/**
 
