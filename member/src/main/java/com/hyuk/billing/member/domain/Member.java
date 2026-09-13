@@ -24,7 +24,7 @@ public class Member {
         this.memberId = Objects.requireNonNull(memberId);
         this.googleId = Objects.requireNonNull(googleId);
         this.email = Objects.requireNonNull(email);
-        this.registeredAt = registeredAt;
+        this.registeredAt = Objects.requireNonNull(registeredAt);
         this.role = Objects.requireNonNull(role);
     }
 }
